@@ -9,10 +9,10 @@
       .CodeMirror {
 	  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
 	  font-size: 16px;
-	  height: 90%;
+	  height: 90%
       }
       html, body, .container-fluid {
-	  height: 100%;
+      	  height: 100%;
       }
     </style>
   </head>
@@ -28,7 +28,7 @@
 		<label for="source">Source Code</label>
 		<textarea class="form-control" id="source" name="source"></textarea>
 	      </div>
-	      <div class="col">
+	      <div class="col h-100">
 		<label for="object">Assembly</label>
 		<textarea class="form-control" id="object" readonly></textarea>
 	      </div>
@@ -53,12 +53,14 @@
       let sourceEditor = CodeMirror.fromTextArea(document.getElementById('source'), {
 	  lineNumbers: true,
 	  mode: 'text/x-csrc',
+	  lineWrapping: true,
       });
 
       sourceEditor.refresh();
       let objectEditor = CodeMirror.fromTextArea(document.getElementById('object'), {
 	  lineNumbers: true,
 	  mode: 'gas',
+	  lineWrapping: true,
 	  readOnly: true
       });
 
