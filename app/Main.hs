@@ -1,21 +1,26 @@
-{-# LANGUAGE DataKinds, TypeOperators, DeriveAnyClass, DeriveGeneric, OverloadedStrings, MultiParamTypeClasses #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE DeriveAnyClass        #-}
+{-# LANGUAGE DeriveGeneric         #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE TypeOperators         #-}
 module Main where
 
-import qualified Data.ByteString.Lazy as BS
-import Servant.JS
-import Control.Monad.IO.Class
-import System.Process
-import Servant
-import GHC.Generics
-import Data.Aeson
-import Network.Wai.Handler.Warp
-import Network.HTTP.Media ((//), (/:))
-import Web.FormUrlEncoded (FromForm(..), parseUnique)
+import           Control.Monad.IO.Class
+import           Data.Aeson
+import qualified Data.ByteString.Lazy     as BS
+import           GHC.Generics
+import           Network.HTTP.Media       ((//), (/:))
+import           Network.Wai.Handler.Warp
+import           Servant
+import           Servant.JS
+import           System.Process
+import           Web.FormUrlEncoded       (FromForm (..), parseUnique)
 
 newtype Compiler = Compiler { source :: String }
   deriving (Show, Generic, ToJSON, FromJSON)
 
-instance FromForm Compiler where 
+instance FromForm Compiler where
   fromForm form = Compiler <$> parseUnique "source" form
 
 type CompilerAPI = "compiler" :> ReqBody '[JSON, FormUrlEncoded] Compiler :> Post '[JSON] String
@@ -41,7 +46,7 @@ server indexFile = index
     compile :: Compiler -> Handler String
     compile (Compiler src) = do
       liftIO $ writeFile "./tmp.c" src
-      liftIO $ readProcess "./hoc_nyan/hoc" ["./tmp.c"] "" 
+      liftIO $ readProcess "./hoc_nyan/hoc" ["./tmp.c"] ""
 
 compilerAPI :: Proxy CompilerAPI
 compilerAPI = Proxy
