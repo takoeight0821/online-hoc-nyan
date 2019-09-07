@@ -69,18 +69,6 @@ int main(void) {
 	  lineWrapping: true,
       });
 
-      // let objectEditor = CodeMirror.fromTextArea(document.getElementById('object'), {
-      // 	  lineNumbers: true,
-      // 	  mode: 'gas',
-      // 	  lineWrapping: true,
-      // 	  readOnly: true
-      // });
-
-      // let errorEditor = CodeMirror.fromTextArea(document.getElementById('error'), {
-      // 	  lineWrapping: true,
-      // 	  readOnly: true,
-      // });
-
       $('#compile').on('click', function () {
 	  sourceEditor.save();
 	  $.post('/compiler', {'source': $('#source').val()})
@@ -88,11 +76,6 @@ int main(void) {
 		  console.log(data);
 		  $('#object').val(data.object);
 		  $('#error').val(data.compileError);
-
-		  // objectEditor.setValue(data.object);
-		  // objectEditor.save();
-		  // errorEditor.setValue(data.compileError);
-		  // errorEditor.save();
 	      });
       });
     </script>
