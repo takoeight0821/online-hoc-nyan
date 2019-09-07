@@ -26,11 +26,24 @@
 	    <div class="form-row h-100">
 	      <div class="col h-100">
 		<label for="source">Source Code</label>
-		<textarea class="form-control" id="source" name="source"></textarea>
+		<textarea class="form-control" id="source" name="source">
+int main(void) {
+  return 0;
+}</textarea>
 	      </div>
 	      <div class="col h-100">
-		<label for="object">Assembly</label>
-		<textarea class="form-control" id="object" readonly></textarea>
+		<nav class="nav nav-tabs">
+		  <a class="nav-link active" data-toggle="tab" href="#stdout">Output</a>
+		  <a class="nav-link" data-toggle="tab" href="#stderr">Error</a>
+		</nav>
+		<div class="tab-content h-100">
+		  <div id="stdout" class="tab-pane show active h-100">
+		    <textarea class="form-control h-100" id="object" readonly></textarea>
+		  </div>
+		  <div id="stderr" class="tab-pane h-100">
+		    <textarea class="form-control h-100" id="error" readonly></textarea>
+		  </div>
+		</div>
 	      </div>
 	    </div>
 	  </form>
@@ -56,20 +69,30 @@
 	  lineWrapping: true,
       });
 
-      sourceEditor.refresh();
-      let objectEditor = CodeMirror.fromTextArea(document.getElementById('object'), {
-	  lineNumbers: true,
-	  mode: 'gas',
-	  lineWrapping: true,
-	  readOnly: true
-      });
+      // let objectEditor = CodeMirror.fromTextArea(document.getElementById('object'), {
+      // 	  lineNumbers: true,
+      // 	  mode: 'gas',
+      // 	  lineWrapping: true,
+      // 	  readOnly: true
+      // });
+
+      // let errorEditor = CodeMirror.fromTextArea(document.getElementById('error'), {
+      // 	  lineWrapping: true,
+      // 	  readOnly: true,
+      // });
 
       $('#compile').on('click', function () {
 	  sourceEditor.save();
 	  $.post('/compiler', {'source': $('#source').val()})
 	      .done(function (data) {
-		  objectEditor.setValue(data);
-		  objectEditor.save();
+		  console.log(data);
+		  $('#object').val(data.object);
+		  $('#error').val(data.compileError);
+
+		  // objectEditor.setValue(data.object);
+		  // objectEditor.save();
+		  // errorEditor.setValue(data.compileError);
+		  // errorEditor.save();
 	      });
       });
     </script>

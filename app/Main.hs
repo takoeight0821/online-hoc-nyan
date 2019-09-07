@@ -20,10 +20,13 @@ import           Web.FormUrlEncoded       (FromForm (..), parseUnique)
 newtype Compiler = Compiler { source :: String }
   deriving (Show, Generic, ToJSON, FromJSON)
 
+data Output = Output { object :: String, compileError :: String }
+  deriving (Show, Generic, ToJSON, FromJSON)
+
 instance FromForm Compiler where
   fromForm form = Compiler <$> parseUnique "source" form
 
-type CompilerAPI = "compiler" :> ReqBody '[JSON, FormUrlEncoded] Compiler :> Post '[JSON] String
+type CompilerAPI = "compiler" :> ReqBody '[JSON, FormUrlEncoded] Compiler :> Post '[JSON] Output
 
 type API = Get '[HTML] BS.ByteString
   :<|> "static" :> Raw
@@ -43,10 +46,11 @@ server indexFile = index
                    :<|> compile
   where
     index = return indexFile
-    compile :: Compiler -> Handler String
+    compile :: Compiler -> Handler Output
     compile (Compiler src) = do
       liftIO $ writeFile "./tmp.c" src
-      liftIO $ readProcess "./hoc_nyan/hoc" ["./tmp.c"] ""
+      (_, asm, err)<- liftIO $ readProcessWithExitCode "./hoc_nyan/hoc" ["./tmp.c"] ""
+      return $ Output asm err
 
 compilerAPI :: Proxy CompilerAPI
 compilerAPI = Proxy
