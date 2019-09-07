@@ -23,14 +23,11 @@ dependencies:
 - base >= 4.7 && < 5
 - aeson
 - servant
-- QuickCheck
-- servant-mock
 - servant-server
 - wai
 - warp
 - http-api-data
 - process
-- servant-js
 - bytestring
 - http-media
 
