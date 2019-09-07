@@ -2,23 +2,35 @@
 
 <html>
   <head>
+    <link rel="stylesheet" href="/static/codemirror.css">
     <link rel="stylesheet" href="/static/bootstrap.min.css">
+
+    <style type="text/css" media="screen">
+      .CodeMirror {
+	  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+	  font-size: 16px;
+	  height: 90%;
+      }
+      html, body, .container-fluid {
+	  height: 100%;
+      }
+    </style>
   </head>
   
   <body>
 
     <div class="container-fluid">
-      <div class="row">
-	<div class="col">
-	  <form>
-	    <div class="form-row">
-	      <div class="col">
+      <div class="row h-75">
+	<div class="col h-100">
+	  <form class="h-100">
+	    <div class="form-row h-100">
+	      <div class="col h-100">
 		<label for="source">Source Code</label>
-		<textarea class="form-control" id="source" rows="20" name="source"></textarea>
+		<textarea class="form-control" id="source" name="source"></textarea>
 	      </div>
 	      <div class="col">
 		<label for="object">Assembly</label>
-		<textarea class="form-control" id="object" rows="20" readonly></textarea>
+		<textarea class="form-control" id="object" readonly></textarea>
 	      </div>
 	    </div>
 	  </form>
@@ -31,14 +43,31 @@
       </div>
     </div>
     
-    <script src="static/jquery-3.4.1.js"></script>
-    <script src="static/bootstrap.bundle.min.js"></script>
+    <script src="/static/jquery-3.4.1.js"></script>
+    <script src="/static/bootstrap.bundle.min.js"></script>
+    <script src="/static/codemirror.js"></script>
+    <script src="/static/clike.js"></script>
+    <script src="/static/gas.js"></script>
 
     <script>
+      let sourceEditor = CodeMirror.fromTextArea(document.getElementById('source'), {
+	  lineNumbers: true,
+	  mode: 'text/x-csrc',
+      });
+
+      sourceEditor.refresh();
+      let objectEditor = CodeMirror.fromTextArea(document.getElementById('object'), {
+	  lineNumbers: true,
+	  mode: 'gas',
+	  readOnly: true
+      });
+
       $('#compile').on('click', function () {
-	  $.post('/compiler', {'source':$('#source').val()})
+	  sourceEditor.save();
+	  $.post('/compiler', {'source': $('#source').val()})
 	      .done(function (data) {
-		  $('#object').val(data);
+		  objectEditor.setValue(data);
+		  objectEditor.save();
 	      });
       });
     </script>
