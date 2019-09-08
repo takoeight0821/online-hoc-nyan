@@ -14,6 +14,9 @@
       html, body, .container-fluid {
       	  height: 100%;
       }
+      #object, #binary {
+      	  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+      }
     </style>
   </head>
   
@@ -35,6 +38,7 @@ int main(void) {
 		<nav class="nav nav-tabs">
 		  <a class="nav-link active" data-toggle="tab" href="#stdout">Output</a>
 		  <a class="nav-link" data-toggle="tab" href="#stderr">Error</a>
+		  <a class="nav-link" data-toggle="tab" href="#objdump">ObjDump</a>
 		</nav>
 		<div class="tab-content h-100">
 		  <div id="stdout" class="tab-pane show active h-100">
@@ -42,6 +46,9 @@ int main(void) {
 		  </div>
 		  <div id="stderr" class="tab-pane h-100">
 		    <textarea class="form-control h-100" id="error" readonly></textarea>
+		  </div>
+		  <div id="objdump" class="tab-pane h-100">
+		    <textarea class="form-control h-100" id="binary" readonly></textarea>
 		  </div>
 		</div>
 	      </div>
@@ -76,6 +83,7 @@ int main(void) {
 		  console.log(data);
 		  $('#object').val(data.object);
 		  $('#error').val(data.compileError);
+		  $('#binary').val(data.binary);
 	      });
       });
     </script>

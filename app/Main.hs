@@ -20,7 +20,7 @@ import           Web.FormUrlEncoded       (FromForm (..), parseUnique)
 newtype Compiler = Compiler { source :: String }
   deriving (Show, Generic, ToJSON, FromJSON)
 
-data Output = Output { object :: String, compileError :: String }
+data Output = Output { object :: String, compileError :: String, binary :: String }
   deriving (Show, Generic, ToJSON, FromJSON)
 
 instance FromForm Compiler where
@@ -47,7 +47,10 @@ server indexFile = pure indexFile
     compile (Compiler src) = do
       liftIO $ writeFile "./tmp.c" src
       (_, asm, err)<- liftIO $ readProcessWithExitCode "./hoc_nyan/hoc" ["./tmp.c"] ""
-      return $ Output asm err
+      liftIO $ writeFile "./tmp.s" asm
+      liftIO $ callProcess "gcc" ["-static", "-c", "./tmp.s"]
+      bin <- liftIO $ readProcess "objdump" ["-D", "./tmp.o"] ""
+      return $ Output asm err bin
 
 main :: IO ()
 main = do
